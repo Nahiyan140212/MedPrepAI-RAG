@@ -1,0 +1,21 @@
+huggingface_hub==0.7.0
+nltk
+numpy
+scikit-learn
+scipy
+sentencepiece
+torch
+torchvision
+tqdm
+transformers
+sentence-transformers==2.2.2
+langchain
+flask
+pypdf
+python-dotenv
+pinecone[grpc]
+langchain-pinecone
+langchain_community
+langchain_openai
+langchain_experimental
+-e .

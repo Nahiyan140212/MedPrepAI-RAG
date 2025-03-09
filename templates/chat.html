@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-card">
+            
+            <!-- Chat Header -->
+            <div class="chat-header">
+                <img src="https://online.flipbuilder.com/clinical-library/vxes/files/shot.png" alt="Bot">
+                <h2>USMLE Step 1(First Aid) Expert</h2>
+            </div>
+            
+            <!-- Chat Body -->
+            <div id="chat-body" class="chat-body">
+                <!-- Messages will be displayed here -->
+            </div>
+            
+            <!-- Chat Footer -->
+            <div class="chat-footer">
+                <form id="chat-form">
+                    <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" required>
+                    <button type="submit"><i class="fas fa-paper-plane"></i> Send</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#chat-form").on("submit", function (event) {
+                event.preventDefault();
+
+                const userText = $("#user-input").val();
+                const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                if (userText.trim() !== "") {
+                    $("#chat-body").append(`
+                        <div class="message user-message">
+                            <div class="message-text">${userText} <span class="timestamp">${timestamp}</span></div>
+                        </div>
+                    `);
+                    $("#user-input").val("");
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/get",
+                        data: { msg: userText },
+                    }).done(function (botResponse) {
+                        $("#chat-body").append(`
+                            <div class="message bot-message">
+                                <div class="message-text">${botResponse} <span class="timestamp">${timestamp}</span></div>
+                            </div>
+                        `);
+                    });
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
