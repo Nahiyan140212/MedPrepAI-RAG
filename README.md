@@ -16,8 +16,8 @@ MedPrepAI is an advanced chatbot designed for medical students preparing for the
 - **Python** (FastAPI for backend)
 - **LangChain** (RAG-based retrieval)
 - **OpenAI API** (LLM for response generation)
-- **FAISS / Pinecone** (Vector database for efficient retrieval)
-- **Streamlit / React** (Frontend UI)
+- **Pinecone** (Vector database for efficient retrieval)
+- **HTML, CSS** (Frontend UI)
 
 ## Setup Instructions
 
