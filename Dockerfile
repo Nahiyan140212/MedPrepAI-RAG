@@ -15,4 +15,4 @@ COPY . .
 EXPOSE 8000
 
 # Run the app
-CMD ["python", "app.py"]
+CMD ["python", "cloud_app.py"]
