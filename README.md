@@ -3,7 +3,9 @@
 ## Overview
 
 MedPrepAI is an advanced chatbot designed for medical students preparing for the **USMLE Step 1**. It leverages **Retrieval-Augmented Generation (RAG)** to provide accurate and up-to-date answers from the **First Aid for the USMLE Step 1 2024** guide. 
-Access the Chatbot here: [First AID] https://huggingface.co/spaces/Nahiyan14/USMLEPrepAI
+
+
+**Access the Chatbot here: [First AID USMLE Step 1 AI Assistant](https://huggingface.co/spaces/Nahiyan14/USMLEPrepAI)**
 
 You will get 5 response everyday to ask.
 
