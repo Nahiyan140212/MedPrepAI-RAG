@@ -18,4 +18,13 @@ langchain-pinecone
 langchain_community
 langchain_openai
 langchain_experimental
+fastapi
+uvicorn
+jinja2
+langchain
+langchain-openai
+langchain-pinecone
+pinecone-client
+openai
+python-dotenv
 -e .
