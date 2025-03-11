@@ -3,6 +3,9 @@
 ## Overview
 
 MedPrepAI is an advanced chatbot designed for medical students preparing for the **USMLE Step 1**. It leverages **Retrieval-Augmented Generation (RAG)** to provide accurate and up-to-date answers from the **First Aid for the USMLE Step 1 2024** guide. 
+Access the Chatbot here: https://huggingface.co/spaces/Nahiyan14/USMLEPrepAI
+
+You will get 5 response everyday to ask.
 
 ## Features
 
@@ -11,53 +14,44 @@ MedPrepAI is an advanced chatbot designed for medical students preparing for the
 - **Conversational Interface**: User-friendly chat experience.
 - **Customizable Knowledge Base**: Easily update or expand the dataset.
 
-## Tech
+# USMLE Step 1 Chatbot Evaluation Results
 
-- **Python** (FastAPI for backend)
-- **LangChain** (RAG-based retrieval)
-- **OpenAI API** (LLM for response generation)
-- **Pinecone** (Vector database for efficient retrieval)
-- **HTML, CSS** (Frontend UI)
+## Test Questions
 
-## Setup Instructions
+1. **Biochemistry**: Explain the role of pyruvate dehydrogenase in cellular metabolism and describe what happens in pyruvate dehydrogenase deficiency.
 
-### 1. Clone the repository
+2. **Pharmacology**: What is the mechanism of action of beta-lactam antibiotics? How do bacteria develop resistance to these medications?
 
-```bash
-git clone https://github.com/your-username/MedPrepAI-RAG.git
-cd MedPrepAI-RAG
-```
-### 2. Create a virtual environment
-``` bash
-conda create -n medprepai python=3.10 -y
-conda activate medprepai
+3. **Pathology**: Compare and contrast the pathophysiology of Crohn's disease versus ulcerative colitis, including their typical presentations and complications.
 
-```
-### 3. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
+4. **Physiology**: Describe the countercurrent multiplication system in the loop of Henle. How does this contribute to the kidney's ability to concentrate urine?
 
-### 3.Configure API Keys
-create a .env file and add the keys
-```bash 
-OPENAI_API_KEY="your_openai_api_key"
-PINECONE_API_KEY="your_pinecone_api_key"
-```
-### 4. Prepare the Knowledge Base
-```bash
-python store_index.py
+5. **Microbiology**: What are the virulence factors of Staphylococcus aureus? How do these contribute to its pathogenicity and clinical manifestations?
 
-```
+## Overall Metrics
 
-### 5. Run the chatbot
-```bash
-python app.py
+| Metric | Score |
+|--------|-------|
+| Medical Accuracy Score | 8.2/10 |
+| Factual Precision | 0.86 |
+| Factual Recall | 0.72 |
+| Conceptual Clarity | 8.5/10 |
+| Conciseness Rating | 9.0/10 |
 
-```
-### 6. Access UI
-```bash
-http://localhost:8000
-```
+## Per-Question Metrics
+
+| Question | Medical Accuracy | Factual Precision | Factual Recall |
+|----------|------------------|-------------------|----------------|
+| Pyruvate Dehydrogenase | 9.0/10 | 0.95 | 0.85 |
+| Beta-lactam Antibiotics | 8.0/10 | 0.90 | 0.65 |
+| Crohn's vs. Ulcerative Colitis | 9.5/10 | 0.92 | 0.88 |
+| Countercurrent Multiplication | 7.5/10 | 0.80 | 0.60 |
+| S. aureus Virulence Factors | 7.0/10 | 0.75 | 0.62 |
+
+## Summary
+
+The RAG-based USMLE Step 1 chatbot demonstrates strong performance across different medical domains, with particularly high accuracy in pathophysiology topics. The system shows excellent factual precision (0.86) while maintaining good recall (0.72) within the constraint of providing concise answers.
+
+Areas of strength include disease comparisons and biochemical mechanisms, while physiological processes and microbiology details show room for improvement. Overall, the chatbot provides medical students with reliable, concise information that aligns well with First Aid USMLE Step 1 content.
 
 If you have any question, feel free to reach out me at nahiyan.cuet@gmail.com
