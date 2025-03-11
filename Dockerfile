@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM python:3.9-slim
 
 WORKDIR /app
 
@@ -9,8 +9,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Make port 8080 available to the world outside this container
-ENV PORT=8080
+# Make port 7860 available (Hugging Face default)
+ENV PORT=7860
 
 # Run the application
-CMD exec uvicorn app:app --host 0.0.0.0 --port ${PORT}
+CMD uvicorn app:app --host 0.0.0.0 --port ${PORT}
