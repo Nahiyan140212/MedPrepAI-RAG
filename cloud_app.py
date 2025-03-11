@@ -10,66 +10,77 @@ from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
-from src.prompt import system_prompt  # Assuming this is defined in src/prompt.py
+from src.prompt import system_prompt
 
-# Initialize FastAPI app (no __name__ needed)
 app = FastAPI()
 
-# Load environment variables (optional locally, overridden by Cloud Run env vars)
-load_dotenv()
+# Load environment variables - for GCP, these will come from environment variables
+# set in your Cloud Run configuration
+load_dotenv()  # Still useful for local development
 
-# Get API keys from environment variables
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Set environment variables for LangChain (ensure they’re not None)
-if PINECONE_API_KEY and OPENAI_API_KEY:
-    os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
-    os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
-else:
-    raise ValueError("PINECONE_API_KEY or OPENAI_API_KEY not found in environment variables")
+if not PINECONE_API_KEY or not OPENAI_API_KEY:
+    raise ValueError("Missing PINECONE_API_KEY or OPENAI_API_KEY")
 
-# Initialize embeddings and Pinecone vector store
-embeddings = download_hugging_face_embeddings()
-index_name = "medprep"
-docsearch = PineconeVectorStore.from_existing_index(
-    index_name=index_name,
-    embedding=embeddings
-)
-retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
+os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
 
-# Initialize LLM and RAG chain
-llm = OpenAI(temperature=0.4, max_tokens=500)
-prompt = ChatPromptTemplate.from_messages(
-    [
-        ("system", system_prompt),
-        ("human", "{input}"),
-    ]
-)
-question_answer_chain = create_stuff_documents_chain(llm, prompt)
-rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+# Initialize global variables for reuse across requests
+embeddings = None
+rag_chain = None
 
-# Mount static files (e.g., CSS, JS) if any
+@app.on_event("startup")
+async def startup_event():
+    """Initialize resources when the application starts."""
+    global embeddings, rag_chain
+    
+    try:
+        embeddings = download_hugging_face_embeddings()
+        index_name = "medprep"
+        docsearch = PineconeVectorStore.from_existing_index(index_name=index_name, embedding=embeddings)
+        retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k": 3})
+        
+        llm = OpenAI(temperature=0.4, max_tokens=500)
+        prompt = ChatPromptTemplate.from_messages([("system", system_prompt), ("human", "{input}")])
+        question_answer_chain = create_stuff_documents_chain(llm, prompt)
+        rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+        
+        print("RAG chain initialized successfully")
+    except Exception as e:
+        print(f"Failed to initialize RAG chain: {e}")
+        raise
+
+# Mount static files and templates
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Set up Jinja2 templates for rendering HTML
 templates = Jinja2Templates(directory="templates")
 
-# Root endpoint to serve the chat UI
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("chat.html", {"request": request})
+    try:
+        return templates.TemplateResponse("chat.html", {"request": request})
+    except Exception as e:
+        return HTMLResponse(content=f"Error loading template: {str(e)}", status_code=500)
 
-# Chat endpoint to handle user input
 @app.post("/get")
 async def chat(msg: str = Form(...)):
-    print(f"Input: {msg}")
-    response = rag_chain.invoke({"input": msg})
-    print(f"Response: {response['answer']}")
-    return {"answer": response["answer"]}
+    try:
+        if not rag_chain:
+            return "Error: System not initialized properly"
+        
+        response = rag_chain.invoke({"input": msg})
+        return response.get("answer", "Error: No answer found")
+    except Exception as e:
+        return f"Error processing request: {str(e)}"
 
-# Run the app with Uvicorn for local testing
+# Health check endpoint for GCP
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
 if __name__ == "__main__":
-    port = int(os.getenv("PORT", 8000))  # Use PORT env var for Cloud Run, default to 8000 locally
+    # Get the port from the environment variable
+    port = int(os.getenv("PORT", 8080))
     import uvicorn
-    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
