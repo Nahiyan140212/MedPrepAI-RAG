@@ -16,8 +16,8 @@ MedPrepAI is an advanced chatbot designed for medical students preparing for the
 - **Python** (FastAPI for backend)
 - **LangChain** (RAG-based retrieval)
 - **OpenAI API** (LLM for response generation)
-- **FAISS / Pinecone** (Vector database for efficient retrieval)
-- **Streamlit / React** (Frontend UI)
+- **Pinecone** (Vector database for efficient retrieval)
+- **HTML, CSS** (Frontend UI)
 
 ## Setup Instructions
 
@@ -39,6 +39,7 @@ pip install -r requirements.txt
 ```
 
 ### 3.Configure API Keys
+create a .env file and add the keys
 ```bash 
 OPENAI_API_KEY="your_openai_api_key"
 PINECONE_API_KEY="your_pinecone_api_key"
@@ -58,3 +59,5 @@ python app.py
 ```bash
 http://localhost:8000
 ```
+
+If you have any question, feel free to reach out me at nahiyan.cuet@gmail.com
