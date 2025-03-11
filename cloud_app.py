@@ -12,7 +12,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 from src.prompt import system_prompt  # Assuming this is defined in src/prompt.py
 
-# Initialize FastAPI app
+# Initialize FastAPI app (no __name__ needed)
 app = FastAPI()
 
 # Load environment variables (optional locally, overridden by Cloud Run env vars)
@@ -22,9 +22,12 @@ load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Set environment variables for LangChain
-os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+# Set environment variables for LangChain (ensure they’re not None)
+if PINECONE_API_KEY and OPENAI_API_KEY:
+    os.environ["PINECONE_API_KEY"] = PINECONE_API_KEY
+    os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+else:
+    raise ValueError("PINECONE_API_KEY or OPENAI_API_KEY not found in environment variables")
 
 # Initialize embeddings and Pinecone vector store
 embeddings = download_hugging_face_embeddings()
